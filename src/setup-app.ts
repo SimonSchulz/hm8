@@ -14,10 +14,11 @@ import { usersRouter } from "./user/routers/users.router";
 import { authRouter } from "./auth/routers/auth.router";
 import {commentsRouter} from "./comments/routers/comment.router";
 import { HttpStatus } from "./core/types/http-statuses";
+import cookieParser from "cookie-parser";
 
 export const setupApp = (app: Express) => {
   app.use(express.json());
-
+  app.use(cookieParser());
   app.get("/", (req, res) => {
     res.status(HttpStatus.Ok).send("server works!");
   });
