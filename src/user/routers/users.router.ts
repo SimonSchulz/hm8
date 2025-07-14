@@ -2,7 +2,6 @@ import { Router, Response, Request } from "express";
 import { authMiddleware } from "../../auth/auth-middleware";
 import { usersService } from "../domain/user.service";
 import { HttpStatus } from "../../core/types/http-statuses";
-import { usersQueryRepository } from "../repositories/user.query.repository";
 import { UserViewModel } from "../dto/user.view-model";
 import { passwordValidation } from "../validation/password.validation";
 import { loginValidation } from "../validation/login.validation";
