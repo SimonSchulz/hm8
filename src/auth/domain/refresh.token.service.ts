@@ -14,7 +14,7 @@ export const refreshService = {
       throw new AuthorizationError("Refresh token not found or already used");
     }
 
-    const payload = await jwtService.verifyToken(oldRefreshToken);
+    const payload = await jwtService.verifyRefreshToken(oldRefreshToken);
     if (!payload) {
       throw new AuthorizationError("Invalid or expired refresh token");
     }

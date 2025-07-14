@@ -17,7 +17,7 @@ export async function refreshTokenHandler(
       .cookie("refreshToken", tokens.refreshToken, {
         httpOnly: true,
         secure: true,
-        maxAge: Number(SETTINGS.RF_TIME),
+        maxAge: Number(SETTINGS.RF_TIME) * 1000,
       })
       .status(HttpStatus.Ok)
       .send({ accessToken: tokens.accessToken } as LoginSuccessViewModel);

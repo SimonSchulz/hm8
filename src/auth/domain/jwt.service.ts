@@ -14,7 +14,7 @@ export const jwtService = {
     });
   },
 
-  async verifyToken(token: string): Promise<{ userId: string } | null> {
+  async verifyAccessToken(token: string): Promise<{ userId: string } | null> {
     try {
       return jwt.verify(token, SETTINGS.AC_SECRET) as { userId: string };
     } catch (error) {
@@ -22,11 +22,22 @@ export const jwtService = {
         error instanceof TokenExpiredError ||
         error instanceof JsonWebTokenError
       ) {
-        return null; // токен просрочен или недействителен
+        return null;
       }
-
-      console.error("Unexpected token verification error", error);
-      throw error; // пробрасываем дальше неожиданные ошибки
+      throw error;
+    }
+  },
+  async verifyRefreshToken(token: string): Promise<{ userId: string } | null> {
+    try {
+      return jwt.verify(token, SETTINGS.RF_SECRET) as { userId: string };
+    } catch (error) {
+      if (
+        error instanceof TokenExpiredError ||
+        error instanceof JsonWebTokenError
+      ) {
+        return null;
+      }
+      throw error;
     }
   },
   getTokenExpiration(token: string) {

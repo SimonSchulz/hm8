@@ -12,7 +12,7 @@ export const accessTokenGuard = async (
     if (!req.headers.authorization) throw new AuthorizationError();
     const [authType, token] = req.headers.authorization.split(" ");
     if (authType !== "Bearer" || !token) throw new AuthorizationError();
-    const payload = await jwtService.verifyToken(token);
+    const payload = await jwtService.verifyAccessToken(token);
     if (!payload)
       throw new AuthorizationError("Access token expired or invalid");
     const user = await usersRepository.findById(payload.userId);

@@ -21,7 +21,7 @@ export async function authLoginHandler(
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      maxAge: SETTINGS.RF_TIME as number,
+      maxAge: Number(SETTINGS.RF_TIME) * 1000,
     });
     res.status(HttpStatus.Ok).send({ accessToken } as LoginSuccessViewModel);
   } catch (e: unknown) {
