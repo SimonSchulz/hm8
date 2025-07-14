@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
 import { SETTINGS } from "../../core/setting/setting";
 import { ValidationError } from "../../core/utils/app-response-errors";
 
@@ -18,8 +18,15 @@ export const jwtService = {
     try {
       return jwt.verify(token, SETTINGS.AC_SECRET) as { userId: string };
     } catch (error) {
-      console.error("Token verify some error");
-      return null;
+      if (
+        error instanceof TokenExpiredError ||
+        error instanceof JsonWebTokenError
+      ) {
+        return null; // токен просрочен или недействителен
+      }
+
+      console.error("Unexpected token verification error", error);
+      throw error; // пробрасываем дальше неожиданные ошибки
     }
   },
   getTokenExpiration(token: string) {
