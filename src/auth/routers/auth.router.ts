@@ -44,6 +44,6 @@ authRouter.post(
   inputValidationResultMiddleware,
   resendConfirmationEmail,
 );
-authRouter.get("/auth/me", accessTokenGuard, getUserDataHandler);
+authRouter.get("/me", accessTokenGuard, getUserDataHandler);
 authRouter.post("/refresh-token", refreshTokenHandler);
 authRouter.post("/logout", logoutHandler);

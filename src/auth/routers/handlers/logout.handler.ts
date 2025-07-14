@@ -8,7 +8,7 @@ export async function logoutHandler(
   next: NextFunction,
 ) {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken: string = req.cookies.refreshToken;
 
     if (refreshToken) {
       await refreshTokenRepository.deleteByToken(refreshToken);
