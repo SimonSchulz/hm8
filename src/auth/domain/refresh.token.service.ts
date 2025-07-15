@@ -7,7 +7,6 @@ export const refreshService = {
     if (!oldRefreshToken) {
       throw new AuthorizationError("No refresh token provided");
     }
-
     const tokenRecord =
       await refreshTokenRepository.findByToken(oldRefreshToken);
     if (!tokenRecord) {
