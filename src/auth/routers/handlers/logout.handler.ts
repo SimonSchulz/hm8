@@ -15,6 +15,11 @@ export async function logoutHandler(
     if (!refreshToken) {
       throw new AuthorizationError("No refresh token provided");
     }
+    const isBlacklisted =
+      await refreshTokenRepository.isTokenInvalidated(refreshToken);
+    if (isBlacklisted) {
+      throw new AuthorizationError("Refresh token not found or already used");
+    }
 
     const payload = await jwtService.verifyRefreshToken(refreshToken);
     if (!payload) {
