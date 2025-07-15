@@ -15,13 +15,6 @@ export const authService = {
     const refreshToken = await jwtService.createRefreshToken(
       user._id.toString(),
     );
-    const expiresAt = jwtService.getTokenExpiration(refreshToken);
-    if (!expiresAt) throw new Error("Refresh token expiration not found");
-    await refreshTokenRepository.save({
-      userId: user._id.toString(),
-      token: refreshToken,
-      expiresAt,
-    });
     return { accessToken, refreshToken };
   },
 

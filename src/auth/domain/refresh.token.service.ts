@@ -7,9 +7,10 @@ export const refreshService = {
     if (!oldRefreshToken) {
       throw new AuthorizationError("No refresh token provided");
     }
-    const tokenRecord =
-      await refreshTokenRepository.findByToken(oldRefreshToken);
-    if (!tokenRecord) {
+
+    const isBlacklisted =
+      await refreshTokenRepository.isTokenInvalidated(oldRefreshToken);
+    if (isBlacklisted) {
       throw new AuthorizationError("Refresh token not found or already used");
     }
 
@@ -19,22 +20,24 @@ export const refreshService = {
     }
 
     const userId = payload.userId;
+    const oldExpiresAt = jwtService.getTokenExpiration(oldRefreshToken);
+    if (!oldExpiresAt) {
+      throw new Error("Can't extract expiration from old refresh token");
+    }
 
-    await refreshTokenRepository.deleteByToken(oldRefreshToken);
+    await refreshTokenRepository.saveInvalidToken({
+      userId,
+      token: oldRefreshToken,
+      expiresAt: oldExpiresAt,
+    });
 
     const newAccessToken = await jwtService.createAccessToken(userId);
     const newRefreshToken = await jwtService.createRefreshToken(userId);
-    const expiresAt = jwtService.getTokenExpiration(newRefreshToken);
+    const newExpiresAt = jwtService.getTokenExpiration(newRefreshToken);
 
-    if (!expiresAt) {
-      throw new Error("Can't extract expiration from refresh token");
+    if (!newExpiresAt) {
+      throw new Error("Can't extract expiration from new refresh token");
     }
-
-    await refreshTokenRepository.save({
-      userId,
-      token: newRefreshToken,
-      expiresAt,
-    });
 
     return {
       accessToken: newAccessToken,

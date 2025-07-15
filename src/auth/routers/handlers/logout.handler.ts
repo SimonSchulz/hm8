@@ -13,21 +13,24 @@ export async function logoutHandler(
     const refreshToken: string = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      throw new AuthorizationError("Refresh token provided");
+      throw new AuthorizationError("No refresh token provided");
     }
+
     const payload = await jwtService.verifyRefreshToken(refreshToken);
     if (!payload) {
-      return res
-        .status(HttpStatus.Unauthorized)
-        .json({ message: "Refresh token expired or invalid" });
-    }
-    const tokenInDb = await refreshTokenRepository.findByToken(refreshToken);
-
-    if (!tokenInDb) {
-      throw new AuthorizationError("Refresh token provided");
+      throw new AuthorizationError("Invalid refresh token provided");
     }
 
-    await refreshTokenRepository.deleteByToken(refreshToken);
+    const expiresAt = jwtService.getTokenExpiration(refreshToken);
+    if (!expiresAt) {
+      throw new Error("Can't extract expiration from refresh token");
+    }
+
+    await refreshTokenRepository.saveInvalidToken({
+      userId: payload.userId,
+      token: refreshToken,
+      expiresAt,
+    });
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
