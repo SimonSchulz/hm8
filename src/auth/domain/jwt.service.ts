@@ -31,12 +31,6 @@ export const jwtService = {
     try {
       return jwt.verify(token, SETTINGS.RF_SECRET) as { userId: string };
     } catch (error) {
-      if (
-        error instanceof TokenExpiredError ||
-        error instanceof JsonWebTokenError
-      ) {
-        return null;
-      }
       throw error;
     }
   },
