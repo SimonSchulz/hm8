@@ -7,7 +7,7 @@ export const SETTINGS = {
   AC_SECRET: process.env.AC_SECRET || "f1f5deg4hy5fr5d5g",
   RF_SECRET: process.env.RF_SECRET || "tert34534543efergr",
   AC_TIME: process.env.AC_TIME || 10,
-  RF_TIME: process.env.RF_TIME || 25,
+  RF_TIME: process.env.RF_TIME || 60,
   EMAIL: "testovichtest107@gmail.com",
   EMAIL_PASS: "typj whjv vrcg aksj",
 };
